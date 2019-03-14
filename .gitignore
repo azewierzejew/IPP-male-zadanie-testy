@@ -6,6 +6,8 @@
 
 !.gitignore
 !makefile
-!*.generator.*
+!src
+!src/*
 
 *.generated.in
+bin/*
