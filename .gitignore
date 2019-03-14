@@ -6,3 +6,6 @@
 
 !.gitignore
 !makefile
+!*.generator.*
+
+*.generated.in
