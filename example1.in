@@ -1,0 +1,72 @@
+# Dopuszczalne stają się historie 0, 01, 012, 0123.
+DECLARE 0123
+VALID 0
+VALID 01
+VALID 012
+VALID 0123
+VALID 1
+VALID 01232
+
+# Dopuszczalne stają się dodatkowo historie 01232, 012321, 0123210.
+DECLARE 0123210
+VALID 0123
+VALID 01232
+VALID 012321
+VALID 0123210
+VALID 01232101
+
+# Dopuszczenie dopuszczalnych historii niczego nie zmienia.
+DECLARE 01
+VALID 0
+VALID 01
+VALID 012
+VALID 0123210
+VALID 01232101
+
+# Pozostają tylko historie 0, 01, 012, 0123, 01232.
+REMOVE 012321
+VALID 0
+VALID 01
+VALID 012
+VALID 0123
+VALID 01232
+VALID 012321
+VALID 0123210
+VALID 01232101
+
+# Usuwanie niedopuszczalnych historii niczego nie zmienia.
+REMOVE 01232101232
+VALID 0
+VALID 01232
+VALID 012321
+
+# Historii 0 przypisujemy energię 3, a historii 01 energię 6.
+ENERGY 0 3
+ENERGY 01 6
+ENERGY 0
+ENERGY 01
+
+# Zrównujemy energie dla historii 0 i 01. Będą miały energię 4.
+EQUAL 0 01
+ENERGY 0
+ENERGY 01
+
+# Zrównujemy energie dla historii 01 i 012, czyli historii 012 przypisujemy energię 4.
+EQUAL 01 012
+ENERGY 012
+
+# Po tej operacji historie 0, 01, 012 będą miały energię 7.
+ENERGY 0 7
+ENERGY 0
+ENERGY 01
+ENERGY 012
+
+# Próba przypisania energii dla niedopuszczalnej historii kończy się błędem.
+ENERGY 30 30
+
+# Próba zrównania energii dla niedopuszczalnych historii kończy się błędem.
+EQUAL 012 33
+EQUAL 31 32
+
+# Próba zrównania energii, jeśli żadna z historii nie ma przypisanej energii, kończy się błędem.
+EQUAL 01232 012321
