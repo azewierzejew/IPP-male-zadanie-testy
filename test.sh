@@ -19,13 +19,13 @@ def main(exe, dir):
             out, err = p.communicate()
             with open(os.path.join(directory, name + '.out'), 'rb') as f_out:
                 if f_out.read() != out:
-                    print(f"\u274C TEST {f} FAILED")
+                    print("\u274C TEST {} FAILED".format(f))
                     continue
             with open(os.path.join(directory, name + '.err'), 'rb') as f_err:
                 if f_err.read() != err:
-                    print(f"\u274C TEST {f} FAILED")
+                    print("\u274C TEST {} FAILED".format(f))
                     continue
-            print(f"\u2713 TEST {f} PASSED")
+            print("\u2713 TEST {} PASSED".format(f))
 
 
 if __name__ == '__main__':
