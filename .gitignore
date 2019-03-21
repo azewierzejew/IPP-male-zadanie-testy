@@ -8,6 +8,10 @@
 !makefile
 !src
 !src/*
+!storage
+!storage/*
 
 *.generated.in
+*.decided.out
+*.decided.err
 bin/*
