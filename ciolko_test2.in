@@ -20,7 +20,7 @@ DECLARE 0
 
 ENERGY 0
 EQUAL 0 0
-# OK OK cause moodle
+# ERROR OK cause moodle
 
 ENERGY 0 1337
 
