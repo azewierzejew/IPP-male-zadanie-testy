@@ -2,34 +2,54 @@
 
 import glob
 import os
-import subprocess
 import sys
+from subprocess import Popen, PIPE
+
+try:
+    from termcolor import cprint
+except ModuleNotFoundError:
+    def cprint(a, b, c):
+        print(a)
+
+def test_file(exe, input, output, error):
+    with open(output, 'rb') as o_:
+        out_expected = o_.read()
+
+    with open(error, 'rb') as e_:
+        err_expected = e_.read()
+
+    with open(input) as f_input:
+        p = Popen([exe], stdout=PIPE, stderr=PIPE, stdin=f_input)
+        out, err = p.communicate()
+
+    if p.returncode != 0 or out != out_expected or err != err_expected:
+        cprint("\u274C TEST {} FAILED".format(input), 'white', 'on_red')
+        return
+    
+    cprint("\u2713 TEST {} PASSED".format(input),'white','on_green')
+
+
+    with open(input) as f_input:
+        p = Popen(['valgrind', '--leak-check=full',  '--show-leak-kinds=all',
+        '--errors-for-leak-kinds=all', exe], stdout=PIPE, stderr=PIPE, stdin=f_input)
+        _, err = p.communicate()
+
+    err = err.decode().splitlines()
+    x = min([i for i, line in enumerate(err) if 'SUMMARY' in line]) 
+    print(*err[x:], sep='\n')
 
 def main(exe, dir):
     files = glob.glob(dir + '/*.in')
     for f in files:
-        directory, f_name = os.path.dirname(f), os.path.basename(f)
-        name, ext = os.path.splitext(f_name)
-        if ext != '.in':
-            print("Test file name not ending with '.in'", file=sys.stderr)
-            return
-        with open(f) as x:
-            p = subprocess.Popen([exe], stdout=subprocess.PIPE,
-                                        stderr=subprocess.PIPE, stdin=x)
-            out, err = p.communicate()
-            with open(os.path.join(directory, name + '.out'), 'rb') as f_out:
-                if f_out.read() != out:
-                    print("\u274C TEST {} FAILED".format(f))
-                    continue
-            with open(os.path.join(directory, name + '.err'), 'rb') as f_err:
-                if f_err.read() != err:
-                    print("\u274C TEST {} FAILED".format(f))
-                    continue
-            print("\u2713 TEST {} PASSED".format(f))
+        name, ext = os.path.splitext(f)
+        try:
+            test_file(exe, name + ext, name + '.out', name + '.err')
+        except FileNotFoundError:
+            cprint(f"ONE OF THE FILES FOR {f} WEREN\'T NOT FOUND", "white", "on_yellow")
+
+    
 
 
 if __name__ == '__main__':
     main(sys.argv[1], sys.argv[2])
             
-
-
