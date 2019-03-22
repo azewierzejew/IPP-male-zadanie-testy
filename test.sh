@@ -3,6 +3,7 @@
 import glob
 import os
 import sys
+from time import time
 from subprocess import Popen, PIPE
 
 try:
@@ -19,14 +20,16 @@ def test_file(exe, input, output, error):
         err_expected = e_.read()
 
     with open(input) as f_input:
+        start = time()
         p = Popen([exe], stdout=PIPE, stderr=PIPE, stdin=f_input)
         out, err = p.communicate()
+        elapsed = time() - start
 
     if p.returncode != 0 or out != out_expected or err != err_expected:
         cprint("\u274C TEST {} FAILED".format(input), 'white', 'on_red')
         return
     
-    cprint("\u2713 TEST {} PASSED".format(input),'white','on_green')
+    cprint("\u2713 TEST {0} PASSED, TIME: {1:.2f}".format(input, elapsed),'white','on_green')
 
 
     with open(input) as f_input:
@@ -45,7 +48,7 @@ def main(exe, dir):
         try:
             test_file(exe, name + ext, name + '.out', name + '.err')
         except FileNotFoundError:
-            cprint(f"ONE OF THE FILES FOR {f} WEREN\'T NOT FOUND", "white", "on_yellow")
+            cprint("ONE OF THE FILES FOR {} WEREN\'T NOT FOUND".format(f), "white", "on_yellow")
 
     
 
