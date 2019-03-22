@@ -8,8 +8,6 @@ from subprocess import Popen, PIPE
 try:
     from termcolor import cprint
 except ModuleNotFoundError:
-    print("Install module termcolor for better experience!")
-    print("python3 -m pip install --user termcolor")
     def cprint(a, b, c):
         print(a)
 
@@ -32,7 +30,8 @@ def test_file(exe, input, output, error):
 
 
     with open(input) as f_input:
-        p = Popen(['valgrind', exe], stdout=PIPE, stderr=PIPE, stdin=f_input)
+        p = Popen(['valgrind', '--leak-check=full',  '--show-leak-kinds=all',
+        '--errors-for-leak-kinds=all', exe], stdout=PIPE, stderr=PIPE, stdin=f_input)
         _, err = p.communicate()
 
     err = err.decode().splitlines()
@@ -53,3 +52,4 @@ def main(exe, dir):
 
 if __name__ == '__main__':
     main(sys.argv[1], sys.argv[2])
+            
