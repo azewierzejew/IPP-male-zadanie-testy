@@ -48,7 +48,7 @@ def main(exe, dir):
         try:
             test_file(exe, name + ext, name + '.out', name + '.err')
         except FileNotFoundError:
-            cprint("ONE OF THE FILES FOR {} WEREN\'T NOT FOUND".format(f), "white", "on_yellow")
+            cprint("ONE OF THE FILES FOR {} OR VALGRIND WEREN\'T NOT FOUND".format(f), "grey", "on_yellow")
 
     
 
